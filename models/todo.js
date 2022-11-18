@@ -1,4 +1,6 @@
+// models/todo.js
 "use strict";
+const { Op } = require("sequelize");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
@@ -7,15 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-    }
-    // create task
     static async addTask(params) {
       return await Todo.create(params);
     }
-
-    // display list
     static async showList() {
       console.log("My Todo list \n");
 
@@ -31,9 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       // FILL IN HERE
 
       const dueTodayLists = await Todo.dueToday();
-      console.log(
-        dueTodayLists.map((data) => data.displayableString()).join("\n")
-      );
+      console.log(dueTodayLists.map((data) => data.displayableString()).join("\n"));
       console.log("\n");
 
       console.log("Due Later");
@@ -44,7 +38,6 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
-    // over due
     static async overdue() {
       // FILL IN HERE TO RETURN OVERDUE ITEMS
       return Todo.findAll({
@@ -56,7 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    // due today
     static async dueToday() {
       // FILL IN HERE TO RETURN ITEMS DUE tODAY
       return Todo.findAll({
@@ -68,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-    // due later
+
     static async dueLater() {
       // FILL IN HERE TO RETURN ITEMS DUE LATER
       return Todo.findAll({
@@ -81,7 +73,6 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    // mark complete
     static async markAsComplete(id) {
       // FILL IN HERE TO MARK AN ITEM AS COMPLETE
       return await Todo.update(
@@ -91,12 +82,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
+
     displayableString() {
       let checkbox = this.completed ? "[x]" : "[ ]";
       let date =
         this.dueDate === new Date().toLocaleDateString("en-CA")
           ? ""
-          : ` ${this.dueDate}`;
+          :` ${this.dueDate}`;
       return `${this.id}. ${checkbox} ${this.title}${date}`;
     }
   }
